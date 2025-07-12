@@ -1,25 +1,28 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 export default function MainPage() {
+    const navigate=useNavigate();
   return (
-    <div className="flex flex-col md:flex-row justify-evenly items-center min-h-screen  text-white">
-      <div className="max-w-xl text-2xl leading-relaxed text-blue-400 font-medium mr-30">
-        <p>
-          Welcome to <span className="text-white font-bold text-2xl">BlogSpace</span>,<br />
-          <span className="text-blue-200">
-            your digital space to share ideas, explore creativity, and dive deep into thoughts that matter.
-          </span><br /><br />
-          Whether you're here to <span className="text-white italic">read</span>, <span className="text-white italic">write</span>, or <span className="text-white italic">reflect</span> — you're in the right place.<br />
+    <div className="flex flex-col md:flex-row justify-center items-center min-h-screen bg-gradient-to-br  text-white px-6 py-12">
+      <div className="max-w-2xl text-center md:text-left">
+        <h1 className="text-4xl md:text-5xl font-bold text-blue-400 mb-4 animate-fade-in">
+          Welcome to <span className="text-white">BlogSpace</span>
+        </h1>
+        
+        <p className="text-lg md:text-xl text-blue-200 leading-relaxed mb-6 animate-slide-in">
+          Whether you're here to <span className="italic text-white">read</span>,{' '}
+          <span className="italic text-white">write</span>, or{' '}
+          <span className="italic text-white">reflect</span> —
+          you're in the right place. <br />
           Let’s build something meaningful together 💡.
         </p>
-      </div>
 
-      <div>
-        <img
-          src="/blog.jpg"
-          alt="Blog Banner"
-          className="w-100 h-100 rounded-full object-cover shadow-lg transition-transform duration-300 hover:scale-105"
-        />
+        <button
+          className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 transition text-white font-semibold px-6 py-3 rounded-md shadow-md hover:scale-105"
+          onClick={() => navigate("/signup")}
+        >
+          Get Started
+        </button>
       </div>
     </div>
   );

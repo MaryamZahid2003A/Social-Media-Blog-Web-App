@@ -22,7 +22,7 @@ export default function Header() {
         </span>
         </button>
         </div>
-      <div className="flex border border-blue-900 rounded-xl ">
+      <div className="flex border-2 border-blue-900 rounded-xl ">
         <button
           onClick={handleLogin}
           className={`px-6 py-2 rounded-xl text-white transition cursor-pointer ${
