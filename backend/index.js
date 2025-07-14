@@ -7,6 +7,7 @@ import cookieSession from 'cookie-session';
 import session from 'express-session'; 
 import authRoutes from './routes/googleRoutes.js'; 
 import './Server/passport.js';
+import UserRouter from './routes/userRoutes.js'
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(authRoutes);
+app.use('/api/user',UserRouter);
 
 app.get('/', async (req, res) => {
   console.log("Connected to Server");
