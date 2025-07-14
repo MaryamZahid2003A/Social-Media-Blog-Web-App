@@ -3,6 +3,9 @@ import '../App.css';
 import { FcGoogle } from "react-icons/fc";
 
 export default function Login() {
+  const googleLogin=()=>{
+    window.location.href='http://localhost:5000/auth/google'
+  }
   return (
     <div className="login flex justify-center min-h-screen ">
     
@@ -55,6 +58,7 @@ export default function Login() {
               <button
                 type="button"
                 className="bg-white hover:bg-red-50 text-black font-medium py-2 px-6 rounded-md transition flex items-center justify-center gap-2"
+                onClick={googleLogin}
               >
                 <FcGoogle className="text-xl" />
                 Continue with Google
