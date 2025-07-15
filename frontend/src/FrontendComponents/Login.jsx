@@ -7,12 +7,17 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
+import useGlobalStore from '../Store/GlobalStore';
+import { useEffect } from 'react';
+
 
 export default function Login() {
+    const { user, fetchUser, loading } = useGlobalStore();
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const [visibility,setVisibility]=useState(false);
     const navigate=useNavigate();
+
     const handleLogin =async(e)=>{
         e.preventDefault();
         try{
@@ -29,6 +34,7 @@ export default function Login() {
           console.log(res.data.user)
           toast.success(res.data.message);
           navigate('/blogPage')
+          await fetchUser();
         }
         catch(error){
           console.log(error);

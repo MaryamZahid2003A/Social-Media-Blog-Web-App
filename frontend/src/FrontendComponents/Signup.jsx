@@ -6,8 +6,10 @@ import { BsEyeSlash } from "react-icons/bs";
 import { SlEye } from "react-icons/sl";
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import useGlobalStore from '../Store/GlobalStore';
 
 export default function Signup() {
+  const { user, fetchUser, loading } = useGlobalStore();
   const [firstname,setFirstname]=useState('');
   const [lastname,setLastname]=useState('');
   const [email,setEmail]=useState('');
@@ -30,7 +32,8 @@ export default function Signup() {
       }
       console.log(res.data.savedUser)
       toast.success(res.data.message);
-      navigate('/blogPage')
+      toast.success("Login Your Account !")
+      navigate('/login')
     }
     catch(error){
       console.log(error);

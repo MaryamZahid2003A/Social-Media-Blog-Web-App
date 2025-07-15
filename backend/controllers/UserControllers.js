@@ -14,7 +14,7 @@ export const login=async(req,res)=>{
         if (!checkPassword){
              return res.status(400).json({message : "Incorrect Password !"}, user);    
         }
-        const token = await jwt.sign({id:user.googleId},process.env.JWT_SECRET_KEY,{expiresIn : '20m'});
+        const token = await jwt.sign({user},process.env.JWT_SECRET_KEY,{expiresIn : '20m'});
         res.cookie('AuthToken',token,{
             httpOnly : true,
             sameSite:'strict',
@@ -64,7 +64,7 @@ export const register = async (req, res) => {
 
     const savedUser = await user.save();
 
-    const token = await jwt.sign({ id: user.googleId }, process.env.JWT_SECRET_KEY, {
+    const token = await jwt.sign({ user}, process.env.JWT_SECRET_KEY, {
       expiresIn: '1h',
     });
 
@@ -84,7 +84,7 @@ export const register = async (req, res) => {
 
 
 export const EditProfile = async (req,res)=>{
-    const {id,email,firstname,lastname,profession,location}=req.body;
+    const {email,firstname,lastname,profession,location}=req.body;
     try{
         const editProfile = await User.findOne({email});
         if (!editProfile){
@@ -110,3 +110,19 @@ export const logout = (req, res) => {
   });
   res.status(200).json({ message: 'User logged out successfully!' });
 };
+
+export const fetchUser= async (req,res)=>{
+  const {email}=req.params;
+  try{
+    const user = await User.findOne({email});
+    if (!user){
+      return res.status(400).json({message : " User Not Found !"});
+      
+    }
+    res.status(200).json({message : "User Data found" , user});
+  }
+  catch(error){
+    console.log(error);
+    return res.status(500).json({message : " Internal Server Error !"})
+  }
+}
