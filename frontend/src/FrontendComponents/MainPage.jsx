@@ -18,7 +18,7 @@ export default function MainPage() {
         </p>
 
         <button
-          className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 transition text-white font-semibold px-6 py-3 rounded-md shadow-md hover:scale-105"
+          className="mt-4 inline-block cursor-pointer bg-blue-600 hover:bg-blue-700 transition text-white font-semibold px-6 py-3 rounded-md shadow-md hover:scale-105"
           onClick={() => navigate("/signup")}
         >
           Get Started

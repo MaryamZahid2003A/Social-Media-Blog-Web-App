@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import jwt, { decode } from 'jsonwebtoken'
 export const verifyToken = async (req, res, next) => {
   try {
     const token = req.cookies?.AuthToken;
@@ -6,10 +6,9 @@ export const verifyToken = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({ message: "Unauthenticated: Token Missing or Expired!" });
     }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = decoded;
-    res.json("Authenticated !")
+    res.status(200).json({ user: decoded });
     next();
   } catch (error) {
     console.log(error);

@@ -4,8 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const login=async(req,res)=>{
-    const {email}=req.params;
-    const {password}=req.body;
+    const {email,password}=req.body;
     try{
         const user = await User.findOne({email});
         if (!user){
@@ -19,9 +18,9 @@ export const login=async(req,res)=>{
         res.cookie('AuthToken',token,{
             httpOnly : true,
             sameSite:'strict',
-            maxAge:" 20 * 60 * 1000"
+            maxAge:60*60*1000
         })
-        res.status(200).json({message : "Login Successfully !"})
+        res.status(200).json({message : "Login Successfully !"} , user)
     }
     catch(error){
         console.log(error)
@@ -29,39 +28,81 @@ export const login=async(req,res)=>{
     }
 }
 
-export const register=async(req,res)=>{
-    const {id,firstname,lastname,email,password,location,profession} = req.body;
+export const register = async (req, res) => {
+  const { id, firstname, lastname, email, password, location, profession } = req.body;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/;
+
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Invalid email format!" });
+  }
+
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      message:
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
+    });
+  }
+
+  try {
+    const registerUser = await User.findOne({ email });
+    if (registerUser) {
+      return res.status(400).json({ message: "User already exists!" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      googleId: id,
+      firstname,
+      lastname,
+      email,
+      password: hashedPassword,
+      profession,
+      location,
+    });
+
+    const savedUser = await user.save();
+
+    const token = await jwt.sign({ id: user.googleId }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '1h',
+    });
+
+    res.cookie('AuthToken', token, {
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: 60*60* 1000,
+    });
+
+    res.status(201).json({ message: "User Registered Successfully!", savedUser });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
+
+
+
+export const EditProfile = async (req,res)=>{
+    const {id,email,firstname,lastname,profession,location}=req.body;
     try{
-        const registerUser= await User.findOne({email});
-        if (registerUser){
-            return res.status(400).json({message : " User Already Exist !"});
+        const editProfile = await User.findOne({email});
+        if (!editProfile){
+            return res.status(400).json("User Not Found !");
         }
-        const hashedPassword = await bcrypt.hash(password,10);
-        console.log(id);
-        const user = new User({
-            googleId:id,
-            firstname,
-            lastname,
-            email,
-            password:hashedPassword,
-            profession,
-            location
-        })
-        const savedUser = await user.save();
-        const token = await jwt.sign({id:user.googleId},process.env.JWT_SECRET_KEY,{expiresIn : '30s'});
-        res.cookie('AuthToken',token,{
-            httpOnly : true,
-            sameSite:'strict',
-            maxAge: 30* 1000
-        })
-        res.status(201).json({message : "User Registered Successfully !",savedUser})
+        editProfile.firstname = firstname || editProfile.firstname;
+        editProfile.lastname = lastname || editProfile.lastname;
+        editProfile.profession = profession || editProfile.profession;
+        editProfile.location = location || editProfile.location;
+
+        await editProfile.save();
+        res.status(200).json({message : "Updated Successfully !", editProfile});
     }
     catch(error){
-        console.log(error)
+        console.log(error);
         return res.status(500).json({message : "Internal Server Error !"})
     }
 }
-
 export const logout = (req, res) => {
   res.clearCookie('AuthToken', {
     httpOnly: true,

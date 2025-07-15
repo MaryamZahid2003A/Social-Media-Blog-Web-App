@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   googleId: {
     type: String,
-    required: true,
-    unique: true,
+    required: false,
   },
   firstname: {
     type: String,  

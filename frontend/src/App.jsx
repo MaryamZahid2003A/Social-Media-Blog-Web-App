@@ -6,6 +6,7 @@ import { Route,Routes } from "react-router-dom";
 import Login from "./FrontendComponents/Login";
 import Signup from "./FrontendComponents/Signup";
 import BlogPage from "./FrontendComponents/BlogPage";
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
      <div className="body">
@@ -21,6 +22,7 @@ function App() {
             <Route path='/blogPage' element={<BlogPage/>}/>
           </Routes>
         </div>
+        <ToastContainer position="top-center" autoClose={3000} />
      </div>
   );
 }

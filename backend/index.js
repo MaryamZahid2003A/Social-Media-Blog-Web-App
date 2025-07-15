@@ -1,6 +1,5 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import connectDb from './database/db.js';
 import passport from 'passport';
 import cookieSession from 'cookie-session';
@@ -8,30 +7,23 @@ import session from 'express-session';
 import authRoutes from './routes/googleRoutes.js'; 
 import './Server/passport.js';
 import UserRouter from './routes/userRoutes.js'
+import cors from 'cors';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const app = express();
-
 connectDb();
+app.use(cors({
+  methods: ['POST', 'PUT', 'DELETE', 'GET', 'PATCH'],
+  origin: 'http://localhost:5173',
+  credentials: true 
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-app.use(
-  session({
-    secret: 'secret', 
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, 
-    },
-  })
-);
-
 app.use(passport.initialize());
-app.use(passport.session());
 app.use(authRoutes);
 app.use('/api/user',UserRouter);
 

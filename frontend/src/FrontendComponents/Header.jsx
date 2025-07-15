@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useGlobalStore from '../Store/GlobalStore'
 export default function Header() {
+  const {user , fetchUser} = useGlobalStore();
   const [toggle, setToggle] = useState(false);
+  const [ToggleButton,setToggleButton]=useState(false);
   const navigate=useNavigate();
   const handleLogin = () => {
     setToggle(!toggle);
     navigate('/login')
   };
+  useEffect(()=>{
+    fetchUser()
+    console.log(user);
+    setToggleButton(!ToggleButton);
+  },user);
 
   const handleSignUp = () => {
     setToggle(!toggle);
@@ -22,22 +30,24 @@ export default function Header() {
         </span>
         </button>
         </div>
-      <div className="flex border-2 border-blue-900 rounded-xl ">
-        <button
-          onClick={handleLogin}
-          className={`px-6 py-2 rounded-xl text-white transition cursor-pointer ${
-            !toggle ? 'bg-blue-900' : ' hover:text-white'
-          }`}
-        >
-          Login
-        </button>
-        <button
-          onClick={handleSignUp}
-          className={`${toggle ? 'bg-blue-900 hover:bg-blue-950' : 'text-white'} text-white px-6 py-2 rounded-xl transition cursor-pointer`}
-        >
-          Sign Up
-        </button>
-      </div>
+      {user === null ? 
+        <div className="flex border-2 border-blue-900 rounded-xl ">
+          <button
+            onClick={handleLogin}
+            className={`px-6 py-2 rounded-xl text-white transition cursor-pointer ${
+              !toggle ? 'bg-blue-900 hover:bg-blue-950' : ' hover:text-white'
+            }`}
+          >
+            Login
+          </button>
+          <button
+            onClick={handleSignUp}
+            className={`${toggle ? 'bg-blue-900 hover:bg-blue-950' : 'text-white'} text-white px-6 py-2 rounded-xl transition cursor-pointer`}
+          >
+            Sign Up
+          </button>
+        </div>
+      : <p>{user}</p>}
     </header>
   );
 }
