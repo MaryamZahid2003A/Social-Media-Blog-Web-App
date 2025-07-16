@@ -94,7 +94,7 @@ export default function FriendSuggestion() {
                     )}
                     </div>
                 </div>
-            <div className='flex justify-content-between mt-2'>
+            {/* <div className='flex justify-content-between mt-2'>
                 <h1 className= 'text-white p-2 text-md mb-2'>Friend Suggestion</h1>
                 <p className='mb-2 p-2 text-white text-md ml-40 '>3</p>
             </div>
@@ -123,7 +123,7 @@ export default function FriendSuggestion() {
                     <p className="text-sm text-gray-400">Web Developer</p>
                     </div>
                 </div>
-            </div>
+            </div> */}
             </div>
         </div>
   )

@@ -38,6 +38,9 @@ const handleDialogopen = async (e) => {
 };
 const handleEdit=async(e)=>{
   e.preventDefault();
+  console.log("edit option")
+  console.log(profession);
+  console.log(location);
   try{
     if (!firstname || !lastname){
       toast.error("Profile Must Contain First and Last Name")
@@ -47,13 +50,16 @@ const handleEdit=async(e)=>{
       email,
       firstname,
       lastname,
-      location,
-      profession
+      profession,
+      location
     },{
       withCredentials:true
     })
     toast.success("Updated Successfully !")
-    setUser({ firstname, lastname, profession, location, email });
+    
+    await fetchUser();
+    setUser({firstname,lastname,profession,location})
+    console.log("User after update:", user); 
     setIsOpen(false);
     }
   }

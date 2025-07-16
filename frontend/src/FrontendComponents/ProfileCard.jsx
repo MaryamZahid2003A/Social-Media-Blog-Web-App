@@ -7,12 +7,16 @@ import EditProfile from './EditProfile';
 import useGlobalStore from '../Store/GlobalStore';
 import axios from 'axios'; 
 
+
 export default function ProfileCard() {
-  const { user } = useGlobalStore();
+  const { user,fetchUser } = useGlobalStore();
   const [friendlist, setFriendList] = useState([]);
+ useEffect(() => {
+      fetchUser();
+  }, []);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchFriendList = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/friend/recievedRequest/${user.email}`, {
           withCredentials: true
@@ -25,9 +29,12 @@ export default function ProfileCard() {
     };
 
     if (user?.email) {
-      fetchUser();
+      fetchFriendList();
     }
   }, [user?.email]);
+  useEffect(() => {
+  console.log("Updated friendlist:", friendlist);
+}, [friendlist]);
 
   if (!user) {
     return (
@@ -45,8 +52,8 @@ export default function ProfileCard() {
             <div className="flex items-center">
               <FaUserCircle size={48} className="text-gray-500" />
               <div className="ml-4">
-                <p className="text-lg font-semibold">{user.firstname} {user.lastname}</p>
-                <p className="text-sm text-gray-400">{user.profession || 'No Profession Added'}</p>
+                <p className="text-lg font-semibold">{user?.firstname || 'Firstname'} {user?.lastname || 'Lastname'}</p>
+                <p className="text-sm text-gray-400">{user?.profession || 'No Profession Added'}</p>
               </div>
             </div>
             <EditProfile />
@@ -58,7 +65,7 @@ export default function ProfileCard() {
         <div className="px-6 py-4 space-y-2">
           <div className="flex items-center gap-2 text-gray-400">
             <MdLocationOn className="text-xl" />
-            <span>{user.location || 'Not Added Yet!'}</span>
+            <span>{user?.location || 'Not Added Yet!'}</span>
           </div>
           <div className="flex items-center gap-2 text-gray-400">
             <FaEnvelope className="text-xl" />
@@ -69,17 +76,28 @@ export default function ProfileCard() {
         <hr className="mx-auto w-11/12 border-t-2 border-gray-800" />
 
         <div className="px-6 py-4">
-          <p className="text-white font-semibold mb-2">Received Friend Requests:</p>
+          <div className='flex justify-between'>
+            <p className="text-white font-semibold mb-2">Followers:</p>
+            <p className="text-white font-semibold mb-2">{friendlist.length}</p>
+          </div>
           {friendlist.length === 0 ? (
-            <p className="text-gray-500">No friend requests received.</p>
+            <p className="text-gray-500">No Followers !</p>
           ) : (
-            <ul className="space-y-1 text-sm">
-              {friendlist.map((req, index) => (
-                <li key={index} className="text-gray-300">
-                  {req.email} — <span className="italic">{req.status ? "Accepted" : "Pending"}</span>
-                </li>
-              ))}
-            </ul>
+           <ul className="space-y-1 text-sm max-h-40 overflow-y-auto pr-2">
+        {friendlist.map((req, index) => (
+          <li key={index} className="text-gray-300 text-md">
+            <div className='flex '>
+            <FaUserCircle size={26} className="text-gray-500" />
+            {req.status ? (
+
+              <p className='ml-5'>{req.email}</p>
+            ) : (
+              <p className="italic">{req.email} -------- Pending</p>
+            )}
+            </div>
+          </li>
+        ))}
+      </ul>
           )}
         </div>
       </div>
