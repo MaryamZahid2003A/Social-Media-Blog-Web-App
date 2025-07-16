@@ -32,6 +32,7 @@ passport.use(
                 }
                 const createUser = new User({
                     googleId:profile.id,
+                    email: profile.emails?.[0]?.value || '',
                     firstname:profile.name?.givenName ||  '',
                     lastname:profile.name?.familyName ||  '',
                     profession:'',

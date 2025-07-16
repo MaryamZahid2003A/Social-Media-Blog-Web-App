@@ -3,6 +3,7 @@ import { FiSearch } from 'react-icons/fi';
 import ProfileCard from './ProfileCard';
 import Blog from './Blog';
 import FriendCard from './FriendCard';
+import FriendSuggestion from './FriendSuggestion';
 
 export default function BlogPage() {
   
@@ -33,8 +34,13 @@ export default function BlogPage() {
         <div>
             <Blog/>
         </div>
-        <div>
-            <FriendCard/>
+        <div className=' flex-row'> 
+          <div>
+              <FriendCard/>
+          </div>
+          <div>
+            <FriendSuggestion/>
+          </div>
         </div>
       </div>
     </div>

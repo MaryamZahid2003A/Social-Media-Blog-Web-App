@@ -63,7 +63,7 @@ export default function Header() {
           <p className="text-white">Welcome, {user.firstname}</p>
           <button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl text-white"
+            className="bg-red-500 cursor-pointer hover:bg-red-600 px-4 py-2 rounded-xl text-white"
           >
             Logout
           </button>

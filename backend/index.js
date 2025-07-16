@@ -7,6 +7,7 @@ import session from 'express-session';
 import authRoutes from './routes/googleRoutes.js'; 
 import './Server/passport.js';
 import UserRouter from './routes/userRoutes.js'
+import FriendRoutes from './routes/friendRoutes.js'
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -26,6 +27,8 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(authRoutes);
 app.use('/api/user',UserRouter);
+app.use('/api/friend',FriendRoutes);
+
 
 app.get('/', async (req, res) => {
   console.log("Connected to Server");
