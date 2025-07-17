@@ -33,8 +33,8 @@ export default function Login() {
           }
           console.log(res.data.user)
           toast.success(res.data.message);
-          navigate('/blogPage')
           await fetchUser();
+          navigate('/blogPage')
         }
         catch(error){
           console.log(error);

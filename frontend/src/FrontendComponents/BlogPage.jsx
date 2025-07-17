@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiSearch } from 'react-icons/fi'; 
 import ProfileCard from './ProfileCard';
-import Blog from './Blog';
+import PostCard from './PostCard';
 import FriendCard from './FriendCard';
 import FriendSuggestion from './FriendSuggestion';
 
@@ -32,7 +32,7 @@ export default function BlogPage() {
             <ProfileCard/>
         </div>
         <div>
-            <Blog/>
+            <PostCard/>
         </div>
         <div className=' flex-row'> 
           <div>

@@ -109,21 +109,21 @@ export const acceptRequest = async (req, res) => {
 
 export const DenyRequest = async(req,res)=>{
    const { email } = req.params;
-  const { recieverEmail } = req.body; 
+  const { receiverEmail } = req.body; 
   try {
-    // Login User Dny request
+    // Login User (Deny request)
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
    
      user.recievedRequest = user.recievedRequest.filter(
-      (req) => req.email !== recieverEmail
+      (req) => req.email !== receiverEmail
     );
     await user.save(); 
 
     // Change the status of requestSent (who send the request?)
-    const RequestSentUser = await User.findOne({email:recieverEmail});
+    const RequestSentUser = await User.findOne({email:receiverEmail});
     if (!RequestSentUser) {
       return res.status(400).json({ message: 'User not found' });
     }

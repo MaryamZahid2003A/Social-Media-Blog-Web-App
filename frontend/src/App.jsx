@@ -6,8 +6,11 @@ import { Route,Routes } from "react-router-dom";
 import Login from "./FrontendComponents/Login";
 import Signup from "./FrontendComponents/Signup";
 import BlogPage from "./FrontendComponents/BlogPage";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import useGlobalStore from "./Store/GlobalStore";
+import PrivateRoute from "./PrivateRoute";
 function App() {
+  const {user}= useGlobalStore();
   return (
      <div className="body">
         <div>
@@ -19,7 +22,14 @@ function App() {
             <Route path='/' element={<MainPage/>}/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<Signup/>}/>
-            <Route path='/blogPage' element={<BlogPage/>}/>
+            <Route
+              path="/blogPage"
+              element={
+                <PrivateRoute>
+                  <BlogPage />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </div>
         <ToastContainer position="top-center" autoClose={3000} />

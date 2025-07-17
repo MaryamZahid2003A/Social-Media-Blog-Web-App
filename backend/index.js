@@ -8,11 +8,14 @@ import authRoutes from './routes/googleRoutes.js';
 import './Server/passport.js';
 import UserRouter from './routes/userRoutes.js'
 import FriendRoutes from './routes/friendRoutes.js'
+import postRoute from './routes/postRoutes.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
 
 dotenv.config();
-
 const app = express();
 connectDb();
 app.use(cors({
@@ -28,6 +31,7 @@ app.use(passport.initialize());
 app.use(authRoutes);
 app.use('/api/user',UserRouter);
 app.use('/api/friend',FriendRoutes);
+app.use('/api/post',postRoute);
 
 
 app.get('/', async (req, res) => {
