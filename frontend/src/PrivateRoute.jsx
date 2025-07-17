@@ -1,15 +1,17 @@
-import React from 'react'
-import { useAsyncValue, useNavigate } from 'react-router-dom'
-import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
 import useGlobalStore from "./Store/GlobalStore";
-export default function PrivateRoute({children}) {
-  const navigate = useNavigate();
-  
-  const {user}=useGlobalStore();
-  if (!user){
-    toast.error("Unauthenticated User ! Please Login First");
-    return <Navigate to="/login" replace />;
+import { Navigate } from "react-router-dom";
+export default function PrivateRoute({ children }) {
+  const { user, loading } = useGlobalStore();
+
+  console.log('PrivateRoute: user:', user, 'loading:', loading); // 👈 Add this
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
   return children;
 }

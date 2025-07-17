@@ -13,7 +13,7 @@ router.get('/auth/google',
 router.get('/auth/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: 'http://localhost:5173/login' }),
   async (req, res) => {
-    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({user: req.user}, process.env.JWT_SECRET_KEY, {
       expiresIn: '1h'
     });
 

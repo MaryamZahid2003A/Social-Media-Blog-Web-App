@@ -1,11 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { CiImageOn, CiVideoOn, CiCircleRemove } from "react-icons/ci";
 import { MdOutlineGifBox } from "react-icons/md";
 import { Dialog } from '@headlessui/react';
 import axios from 'axios';
+import { FaUserCircle } from 'react-icons/fa';
+
 import { toast } from 'react-toastify';
+import useGlobalStore from '@/Store/GlobalStore';
 export default function PostCard() {
+  const {user}=useGlobalStore();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPreview, setSelectedPreview] = useState(null);
   const imageInputRef = useRef(null);
@@ -13,13 +17,16 @@ export default function PostCard() {
   const gifInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [description, setDescription] = useState('');
+  const [fetchAllPost,setfetchAllPost]=useState([]);
 
 const handlePost = async () => {
   const formData = new FormData();
+  formData.append('email',user.email);
   formData.append('description', description);
   selectedFiles.forEach(({ file }) => {
     formData.append('media', file);
   });
+  
 
   try {
     const response = await axios.post('http://localhost:5000/api/post/createPost', formData, {
@@ -96,6 +103,19 @@ const handlePost = async () => {
     setSelectedPreview(media);
     setIsOpen(true);
   };
+
+  useEffect(()=>{
+
+    const fetchPost=async()=>{
+      const fetch = await axios.get("http://localhost:5000/api/post/fetchAllPost" ,{
+        withCredentials:true
+      })
+      setfetchAllPost(fetch.data.fetchPost);
+      console.log("showing All post")
+      console.log(fetch.data.fetchPost);
+    }
+    fetchPost();
+  },[])
   
 
   return (
@@ -187,6 +207,77 @@ const handlePost = async () => {
           ))}
         </div>
       </div>
+      <div className="mt-10">
+            <h2 className="text-xl font-bold mb-6 text-white border-b border-slate-600 pb-2">
+              📝Posts
+            </h2>
+
+            {fetchAllPost.length === 0 ? (
+              <p className="text-gray-400 text-center">No posts available yet.</p>
+            ) : (
+              <div className="">
+                {fetchAllPost.map((post, index) => (
+                  <div
+                    key={index}
+                    className="bg-slate-800  mt-5 rounded-lg p-4 shadow-md hover:shadow-blue-400/30 transition-all duration-300 border border-slate-700"
+                  >
+                    {/* Post Header */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <FaUserCircle size={40}/>
+                      </div>
+                      <div className="text-lg text-blue-400 font-semibold truncate w-full ml-5">
+                        {post.user.firstname} {post.user.lastname}   {post.user.profession}
+                      </div>
+                    </div>
+
+                    <p className="text-gray-300 mb-2 text-md ml-5">{post.description}</p>
+
+                    {/* Media */}
+                    {post.media && post.media.length > 0 && (
+                      <div
+                      className={`${
+                        post.media.length === 1
+                          ? 'flex justify-center'
+                          : 'flex gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800'
+                      } py-2`}
+                    >
+                        {post.media.map((mediaItem, i) => {
+                          const ext = mediaItem.url.split(".").pop().toLowerCase();
+                          const isVideo = ["mp4", "webm", "ogg"].includes(ext);
+                          const isImage = ["jpg", "jpeg", "png", "gif"].includes(ext);
+
+                          return (
+                            <div
+                              key={i}
+                              className="min-w-[400px] max-w-[660px] h-[350px] rounded-md overflow-hidden group hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center"
+                            >
+                              {isVideo ? (
+                                <video
+                                  src={mediaItem.url}
+                                  controls
+                                  className="w-full h-full object-contain rounded"
+                                />
+                              ) : isImage ? (
+                                <img
+                                  src={mediaItem.url}
+                                  alt="Post Media"
+                                  className="w-full h-full object-contain rounded"
+                                />
+                              ) : (
+                                <p className="text-red-400 text-sm p-2">Unsupported media</p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
 
         <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
           <div className="fixed inset-0 bg-gray-200/70 flex items-center justify-center p-4">

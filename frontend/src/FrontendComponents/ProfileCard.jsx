@@ -22,7 +22,25 @@ export default function ProfileCard() {
           withCredentials: true
         });
         const list = Array.isArray(res.data.filteredlist) ? res.data.filteredlist : [];
-        setFriendList(list);  
+        const detailedList = await Promise.all(
+          list.map(async(req)=>{
+              try{
+                  if (!user || !user.email) return;
+                      const userRes = await axios.get(`http://localhost:5000/api/user/fetchUser/${req.email}`, {
+                        withCredentials: true,
+                  });
+                  return {
+                  ...req,
+                      senderInfo: userRes.data.user, 
+                  };
+              }
+              catch(error){
+                console.error("Failed to fetch user for", req.email, error);
+              return req; 
+              }
+          })
+        )
+        setFriendList(detailedList);  
       } catch (error) {
         console.error("Failed to fetch friend requests:", error);
       }
@@ -85,16 +103,18 @@ export default function ProfileCard() {
           ) : (
            <ul className="space-y-1 text-sm max-h-40 overflow-y-auto pr-2">
         {friendlist.map((req, index) => (
-          <li key={index} className="text-gray-300 text-md">
-            <div className='flex '>
-            <FaUserCircle size={26} className="text-gray-500" />
-            {req.status ? (
-
-              <p className='ml-5'>{req.email}</p>
-            ) : (
-              <p className="italic">{req.email} -------- Pending</p>
-            )}
-            </div>
+          <li key={index} className="text-gray-300 text-md mt-2">
+             <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <FaUserCircle size={26} className="text-gray-500" />
+                    <div>
+                    <p className="text-white font-semibold">
+                        {req.senderInfo?.firstname || 'Unknown'} {req.senderInfo?.lastname || ''}
+                    </p>
+                    <p className="text-gray-400 text-sm">{req.senderInfo?.profession || 'No Profession Added Yet'}</p>
+                    </div>
+                </div>
+              </div>
           </li>
         ))}
       </ul>

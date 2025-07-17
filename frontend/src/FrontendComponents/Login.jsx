@@ -11,6 +11,7 @@ import useGlobalStore from '../Store/GlobalStore';
 import { useEffect } from 'react';
 
 
+
 export default function Login() {
     const { user, fetchUser, loading } = useGlobalStore();
     const [email,setEmail]=useState('');
