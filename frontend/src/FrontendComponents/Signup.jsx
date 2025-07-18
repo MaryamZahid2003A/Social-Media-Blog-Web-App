@@ -51,28 +51,26 @@ export default function Signup() {
     window.location.href='http://localhost:5000/auth/google'
   }
   return (
-    <div className=" login flex justify-center min-h-screen mt-3">
-      <div className=" flex flex-col justify-center items-center text-white p-10 pt-2 w-1/2">
-        <h2 className="text-3xl font-semibold mb-6">SignUp to BlogSpace</h2>
+        <div className="login flex justify-center items-center min-h-screen p-4 sm:p-10 ">
+      <div className="flex flex-col justify-center items-center text-white w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5  rounded-lg p-6 sm:p-10 shadow-md">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center">Sign Up to BlogSpace</h2>
 
-        <form className="" >
-          <div className="pb-6 border-b border-gray-700">
-            <p className="mt-1 text-sm text-gray-400">Use your registered credentials to log in.</p>
+        <form className="w-full">
+          <div className="pb-4 border-b border-gray-700 text-center">
+            <p className="text-sm text-gray-400">Use your credentials to create an account</p>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label htmlFor="first-name" className="block text-sm font-medium text-gray-200">
                 First Name
               </label>
               <input
                 id="first-name"
-                name="first-name"
                 type="text"
                 value={firstname}
-                onChange={(e)=>setFirstname(e.target.value)}
-                autoComplete="given-name"
-                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-3 text-base  focus:outline-2 focus:outline-blue-600"
+                onChange={(e) => setFirstname(e.target.value)}
+                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-2 text-sm sm:text-base focus:outline-2 focus:outline-blue-600"
               />
             </div>
 
@@ -82,12 +80,10 @@ export default function Signup() {
               </label>
               <input
                 id="last-name"
-                name="last-name"
                 type="text"
                 value={lastname}
-                onChange={(e)=>setLastname(e.target.value)}
-                autoComplete="family-name"
-                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-3 text-base focus:outline focus:outline-2 focus:outline-blue-600"
+                onChange={(e) => setLastname(e.target.value)}
+                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-2 text-sm sm:text-base focus:outline-2 focus:outline-blue-600"
               />
             </div>
 
@@ -97,12 +93,10 @@ export default function Signup() {
               </label>
               <input
                 id="email"
-                name="email"
                 type="email"
                 value={email}
-                onChange={(e)=>setEmail(e.target.value)}
-                autoComplete="email"
-                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-3 text-base focus:outline focus:outline-2 focus:outline-blue-600"
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-2 text-sm sm:text-base focus:outline-2 focus:outline-blue-600"
               />
             </div>
 
@@ -112,42 +106,40 @@ export default function Signup() {
               </label>
               <input
                 id="password"
-                name="password"
                 type={visibility ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-3 text-base focus:outline focus:outline-2 focus:outline-blue-600"
+                className="block w-full rounded-md bg-[#18173a] text-white px-4 py-3 text-sm sm:text-base focus:outline-2 focus:outline-blue-600"
               />
               <span
                 onClick={handleVisible}
-                className="absolute right-4 top-9 cursor-pointer text-xl text-white"
+                className="absolute right-4 top-9 cursor-pointer text-white text-lg"
               >
                 {visibility ? <SlEye /> : <BsEyeSlash />}
               </span>
             </div>
-
           </div>
 
-          <div className="mt-6 flex flex-col gap-4 w-full">
+          <div className="mt-6 flex flex-col gap-3 w-full">
             <button
-                type="submit"
-                className="bg-blue-700 cursor-pointer hover:bg-blue-800 text-white font-medium py-2 px-6 rounded-md transition"
-                onClick={handleSignup}
+              type="submit"
+              className="bg-blue-700 cursor-pointer hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-md transition"
+              onClick={handleSignup}
             >
-                Signup
+              Sign Up
             </button>
-           <button
-                type="button"
-                className="bg-white  hover:bg-red-50 cursor-pointer text-black font-medium py-2 px-6 rounded-md transition flex items-center justify-center gap-2"
-                onClick={googleLogin}
-                >
-                <FcGoogle className="text-xl" />
-                Continue with Google
-                </button>
-            </div>
+            <button
+              type="button"
+              className="bg-white text-black hover:bg-gray-100 font-medium py-2 px-4 rounded-md flex items-center justify-center gap-2 transition"
+              onClick={googleLogin}
+            >
+              <FcGoogle className="text-xl" />
+              Continue with Google
+            </button>
+          </div>
         </form>
       </div>
     </div>
+
   );
 }

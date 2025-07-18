@@ -5,9 +5,11 @@ import { MdOutlineGifBox } from "react-icons/md";
 import { Dialog } from '@headlessui/react';
 import axios from 'axios';
 import { FaUserCircle } from 'react-icons/fa';
+import { AiOutlineLike } from "react-icons/ai";
 
 import { toast } from 'react-toastify';
 import useGlobalStore from '@/Store/GlobalStore';
+import Comments from './Comments';
 export default function PostCard() {
   const {user}=useGlobalStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +20,8 @@ export default function PostCard() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [description, setDescription] = useState('');
   const [fetchAllPost,setfetchAllPost]=useState([]);
+  const [postComments, setPostComments] = useState({});
+  const [likedPosts, setLikedPosts] = useState({});
 
 const handlePost = async () => {
   const formData = new FormData();
@@ -64,7 +68,7 @@ const handlePost = async () => {
   const MAX_GIF_SIZE_MB = 10;    // example: 10MB
 
   const filteredFiles = files.filter(file => {
-    const fileSizeMB = file.size / (1024 * 1024); // Convert to MB
+    const fileSizeMB = file.size / (1024 * 1024); 
 
     if (type === 'video' && fileSizeMB > MAX_VIDEO_SIZE_MB) {
       toast.error(`Video "${file.name}" exceeds ${MAX_VIDEO_SIZE_MB}MB limit.`);
@@ -81,7 +85,7 @@ const handlePost = async () => {
       return false;
     }
 
-    return true; // ✅ keep the file
+    return true; 
   });
 
   const newFiles = filteredFiles.map(file => ({
@@ -116,7 +120,61 @@ const handlePost = async () => {
     }
     fetchPost();
   },[])
+
+   const handleAdd = () => {
+    if (comments.trim() === '') return;
+    setComment('');
+  };
   
+  const handleLike = async (postid) => {
+    const isLiked = likedPosts[postid] || false;
+    const newLikeState = !isLiked;
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/post/like", {
+        postid,
+        email: user.email,
+        like: newLikeState
+      }, {
+        withCredentials: true
+      });
+      if (newLikeState){
+        toast.success("You Like Post")
+      }
+      else{
+        toast.info("You Unlike Post")
+      }
+      setLikedPosts(prev => ({
+        ...prev,
+        [postid]: newLikeState
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+   const handleComment = async (postid) => {
+     const comment = postComments[postid]?.trim();
+      if (!comment) return;
+      console.log("showing comment");
+      console.log(comment);
+    try {
+      const res = await axios.post("http://localhost:5000/api/post/comment", {
+        postid,
+        email: user.email,
+        coment : comment
+      }, {
+        withCredentials: true
+      });
+      toast.success("Comment added");
+      setPostComments(prev => ({ ...prev, [postid]: '' }));
+      
+    } catch (error) {
+      console.log(error);
+      toast.error("Fail to add comment");
+    }
+  };
+  
+
 
   return (
     <div className='p-3 mt-8 ml-8 w-150 h-auto rounded overflow-hidden shadow-lg bg-slate-900 text-white'>
@@ -207,31 +265,39 @@ const handlePost = async () => {
           ))}
         </div>
       </div>
-      <div className="mt-10">
-            <h2 className="text-xl font-bold mb-6 text-white border-b border-slate-600 pb-2">
+      <div className="mt-3">
+            <h2 className="text-xl font-bold pb-6 text-white border-b  border-slate-600 ">
               📝Posts
             </h2>
 
             {fetchAllPost.length === 0 ? (
               <p className="text-gray-400 text-center">No posts available yet.</p>
             ) : (
-              <div className="">
+              <div className="h-[1000px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
                 {fetchAllPost.map((post, index) => (
                   <div
                     key={index}
-                    className="bg-slate-800  mt-5 rounded-lg p-4 shadow-md hover:shadow-blue-400/30 transition-all duration-300 border border-slate-700"
+                    className="bg-slate-800 scroll-auto  mt-5 rounded-lg p-4 shadow-md hover:shadow-blue-400/30 transition-all duration-300 border border-slate-700"
                   >
                     {/* Post Header */}
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex  mb-3">
                       <div>
-                        <FaUserCircle size={40}/>
+                        <FaUserCircle size={50}/>
                       </div>
-                      <div className="text-lg text-blue-400 font-semibold truncate w-full ml-5">
-                        {post.user.firstname} {post.user.lastname}   {post.user.profession}
+                      <div>
+                        <div className="text-lg text-blue-400 font-semibold truncate w-full ml-2">
+                          {post.user.firstname} {post.user.lastname}
+                          
+                        </div>
+                        <p className='ml-2'>{post.user.profession? (
+                          <p className='text-white'>{post.user.profession}</p>
+                        ) : 
+                        (<p>-----------</p>)}</p>
                       </div>
+
                     </div>
 
-                    <p className="text-gray-300 mb-2 text-md ml-5">{post.description}</p>
+                    <p className="text-gray-300 text-md ml-5">{post.description}</p>
 
                     {/* Media */}
                     {post.media && post.media.length > 0 && (
@@ -250,7 +316,7 @@ const handlePost = async () => {
                           return (
                             <div
                               key={i}
-                              className="min-w-[400px] max-w-[660px] h-[350px] rounded-md overflow-hidden group hover:scale-[1.02] transition-transform duration-300 flex items-center justify-center"
+                              className="min-w-[450px] max-w-[700px] rounded-md overflow-hidden group p-1  flex items-center justify-center"
                             >
                               {isVideo ? (
                                 <video
@@ -272,8 +338,57 @@ const handlePost = async () => {
                         })}
                       </div>
                     )}
+                    <div>
+                     <button onClick={() => handleLike(post._id)}>
+                            {likedPosts[post._id] ? (
+                              <AiOutlineLike size={25} className='cursor-pointer text-blue-400 mt-2' />
+                            ) : (
+                              <AiOutlineLike size={25} className='cursor-pointer text-white mt-2' />
+                            )}
+                          </button>
+                        <div className="mt-6 bg-slate-800 p-2 rounded-md shadow-inner">
+                                <h3 className="text-md font-semibold text-white mb-3">💬 Comments</h3>
+                                <div className="mt-4 flex gap-2">
+                                  <input
+                                        type="text"
+                                        placeholder="Write a comment..."
+                                        value={postComments[post._id] || ''}
+                                        onChange={(e) =>
+                                          setPostComments(prev => ({ ...prev, [post._id]: e.target.value }))
+                                        }
+                                    className="flex-1 bg-slate-900 text-white px-4 py-2 rounded border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+                                      />
+
+                                  <button
+                                     onClick={() => handleComment(post._id)}
+                                    className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-4 py-2 rounded"
+                                  >
+                                    Add
+                                  </button>
+                                </div>
+                                <Comments postid={post._id}/>
+
+                                {/* {comments.length === 0 ? (
+                                  <p className="text-gray-500 mt-5 ml-1">No comments yet.</p>
+                                ) : (
+                                  <ul className="space-y-2 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900">
+                                    {comments.map((cmt, index) => (
+                                      <li
+                                        key={index}
+                                        className="bg-slate-700 p-2 rounded text-sm text-gray-200"
+                                      >
+                                        {cmt}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )} */}
+                              </div>
+                    </div>
                   </div>
+                  
                 ))}
+               
               </div>
             )}
           </div>

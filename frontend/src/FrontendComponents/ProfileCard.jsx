@@ -6,10 +6,12 @@ import { FaEnvelope } from 'react-icons/fa';
 import EditProfile from './EditProfile';
 import useGlobalStore from '../Store/GlobalStore';
 import axios from 'axios'; 
+import { IoHomeOutline } from "react-icons/io5";
 
 
 export default function ProfileCard() {
-  const { user,fetchUser } = useGlobalStore();
+
+  const { user,fetchUser,setPost } = useGlobalStore();
   const [friendlist, setFriendList] = useState([]);
  useEffect(() => {
       fetchUser();
@@ -81,6 +83,14 @@ export default function ProfileCard() {
         <hr className="mx-auto w-11/12 border-t-2 border-gray-800" />
 
         <div className="px-6 py-4 space-y-2">
+          <div className='flex'>
+            <button className='cursor-pointer ' onClick={()=>setPost(false)}>
+            <IoHomeOutline size={20} className='text-blue-400' />  
+            </button>
+            <button className='text-sm cursor-pointer text-blue-400 font-semibold ml-2 '  onClick={()=>setPost(true)}>
+             | Your Posts 
+            </button>
+          </div>
           <div className="flex items-center gap-2 text-gray-400">
             <MdLocationOn className="text-xl" />
             <span>{user?.location || 'Not Added Yet!'}</span>
@@ -89,6 +99,7 @@ export default function ProfileCard() {
             <FaEnvelope className="text-xl" />
             <span>{user.email}</span>
           </div>
+         
         </div>
 
         <hr className="mx-auto w-11/12 border-t-2 border-gray-800" />

@@ -53,9 +53,9 @@ export default function Login() {
     window.location.href='http://localhost:5000/auth/google'
   }
   return (
-    <div className="login flex justify-center min-h-screen ">
+    <div className="login flex justify-center items-center min-h-screen p-4 sm:p-10  ">
     
-      <div className="login flex flex-col justify-center items-center text-white px-6 w-1/2">
+      <div className="flex flex-col justify-center items-center text-white w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5  rounded-lg p-6 sm:p-10 shadow-md">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-semibold mb-6 text-center">Login to BlogSpace</h2>
           <form>

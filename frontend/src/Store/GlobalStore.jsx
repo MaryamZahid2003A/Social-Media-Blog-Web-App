@@ -5,6 +5,8 @@ const useGlobalStore = create((set) => ({
   user: null,
   error: null,
   loading: true,
+  viewPost:false,
+  setPost: (value) => set({ viewPost: value }),
   fetchUser: async () => {
       set((state) => {
         if (!state.loading) return state;
