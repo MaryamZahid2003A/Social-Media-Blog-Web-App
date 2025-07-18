@@ -28,7 +28,6 @@ export const sendRequest = async (req, res) => {
       return res.status(404).json({ message: "Sender not found!" });
     }
 
-    // Check if request already sent
     const duplicateRequest = sender.sentRequest.find((request) => request.email === RequestEmail);
     if (duplicateRequest) {
       return res.status(400).json({
@@ -41,7 +40,6 @@ export const sendRequest = async (req, res) => {
     });
     await sender.save();
 
-    // Push to recipient's receivedRequest
     const receiver = await User.findOne({ email: RequestEmail });
     if (!receiver) {
       return res.status(404).json({ message: "Receiver not found!" });
